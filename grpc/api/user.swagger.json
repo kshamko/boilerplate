@@ -1,0 +1,233 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/user.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/user": {
+      "get": {
+        "operationId": "UserService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userapiUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "ID",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "Phone",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      },
+      "post": {
+        "operationId": "UserService_AddUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/userapiUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userapiUser"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      },
+      "put": {
+        "operationId": "UserService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userapiUpdateReq"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "userapiGetReq": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "Phone": {
+          "type": "string"
+        }
+      }
+    },
+    "userapiUpdatable": {
+      "type": "object",
+      "properties": {
+        "Username": {
+          "type": "string"
+        },
+        "Phone": {
+          "type": "string"
+        },
+        "Userinfo": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Active": {
+          "type": "boolean"
+        },
+        "InvitesAvailable": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "InvitesSent": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "RedFlag": {
+          "type": "boolean"
+        }
+      }
+    },
+    "userapiUpdateReq": {
+      "type": "object",
+      "properties": {
+        "Where": {
+          "$ref": "#/definitions/userapiGetReq"
+        },
+        "Vals": {
+          "$ref": "#/definitions/userapiUpdatable"
+        }
+      }
+    },
+    "userapiUser": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "Username": {
+          "type": "string"
+        },
+        "Phone": {
+          "type": "string"
+        },
+        "Userinfo": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Active": {
+          "type": "boolean"
+        },
+        "InvitesAvailable": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "InvitesSent": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "RedFlag": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
