@@ -22,10 +22,10 @@ const APP_ID = "grpc"
 
 func main() { //nolint: gocyclo
 	var opts = struct {
-		GRPCListen  string `long:"grpc.listen" env:"USER_GRPC_LISTEN" default:":8080" description:"GRPC server interface"`
-		HTTPListen  string `long:"http.listen" env:"USER_HTTP_LISTEN" default:":8090" description:"http server interface"`
-		DebugListen string `long:"debug.listen" env:"USER_DEBUG_LISTEN" default:":6060" description:"Interface for serve debug information(metrics/health/pprof)"`
-		Verbose     bool   `long:"v" env:"USER_VERBOSE" description:"Enable Verbose log output"`
+		GRPCListen  string `long:"grpc.listen" env:"GRPC_LISTEN" default:":6060" description:"GRPC server interface"`
+		HTTPListen  string `long:"http.listen" env:"HTTP_LISTEN" default:":8080" description:"http server interface"`
+		DebugListen string `long:"debug.listen" env:"DEBUG_LISTEN" default:":2112" description:"Interface for serve debug information(metrics/health/pprof)"`
+		Verbose     bool   `long:"v" env:"VERBOSE" description:"Enable Verbose log output"`
 	}{}
 
 	_, err := flags.Parse(&opts)

@@ -4,26 +4,19 @@ import (
 	"context"
 
 	"github.com/go-openapi/runtime/middleware"
-	"github.com/kshamko/boilerplate/gateway/internal/datasource"
 	"github.com/kshamko/boilerplate/gateway/internal/models"
 	"github.com/kshamko/boilerplate/gateway/internal/restapi/operations/data"
+	"github.com/kshamko/boilerplate/grpc/pkg/grpcapi"
 )
 
-// RoutesDatasource interface for routing data.
-// Needed in case we want to mock it and cover handler with tests.
-type Datasource interface {
-	GetDataByID(ctx context.Context, id string) (datasource.Data, error)
-}
-
-// Routes struct to define Handle func on.
+// Data struct to define Handle func on.
 type Data struct {
-	ds Datasource
+	apiClient grpcapi.GRPCServiceClient
 }
 
-// NewRoutes return Routes object.
-func NewData(ds Datasource) *Data {
+func NewData(apiClient grpcapi.GRPCServiceClient) *Data {
 	return &Data{
-		ds: ds,
+		apiClient: apiClient,
 	}
 }
 
@@ -31,7 +24,7 @@ func NewData(ds Datasource) *Data {
 func (dt *Data) Handle(in data.DataParams) middleware.Responder {
 
 	ctx := context.Background()
-	result, err := dt.ds.GetDataByID(ctx, in.ID)
+	result, err := dt.apiClient.GetEntity(ctx, &grpcapi.GetReq{ID: in.ID})
 
 	if err != nil {
 		return data.NewDataNotFound().WithPayload(

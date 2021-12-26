@@ -9,11 +9,11 @@ import (
 
 	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 
 	"github.com/InVisionApp/go-health"
 	"github.com/go-openapi/loads"
 	flags "github.com/jessevdk/go-flags"
-	"github.com/kshamko/boilerplate/gateway/internal/datasource"
 	"github.com/kshamko/boilerplate/gateway/internal/debug"
 	"github.com/kshamko/boilerplate/gateway/internal/handler"
 	"github.com/kshamko/boilerplate/gateway/internal/restapi"
@@ -28,7 +28,7 @@ func main() { //nolint: funlen
 	var opts = struct {
 		HTTPListenHost string `long:"http.listen.host" env:"HTTP_LISTEN_HOST" default:"" description:"http server interface host"`
 		HTTPListenPort int    `long:"http.listen.port" env:"HTTP_LISTEN_PORT" default:"8081" description:"http server interface port"`
-		DebugListen    string `long:"debug.listen" env:"DEBUG_LISTEN" default:":6060" description:"Interface for serve debug information(metrics/health/pprof)"`
+		DebugListen    string `long:"debug.listen" env:"DEBUG_LISTEN" default:":2112" description:"Interface for serve debug information(metrics/health/pprof)"`
 		Verbose        bool   `long:"v" env:"VERBOSE" description:"Enable Verbose log output"`
 		GRPCEnpoint    string `long:"service.grpc" env:"SERVICE_GRPC" default:":8081"`
 	}{}
@@ -56,9 +56,13 @@ func main() { //nolint: funlen
 		return d.Serve(appctx, opts.DebugListen)
 	})
 
-	grpcapi.NewClient()
-
 	gr.Go(func() error {
+		grpcClient, err := initGRPCClient(opts.GRPCEnpoint, grpc.WithInsecure())
+		if err != nil {
+			logger.Error(err)
+			return err
+		}
+
 		swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 		if err != nil {
 			logger.Error(err)
@@ -66,7 +70,7 @@ func main() { //nolint: funlen
 		}
 		api := operations.NewBoilerPlateGWSwaggerAPI(swaggerSpec)
 		api.DataDataHandler = handler.NewData(
-			datasource.NewMap(),
+			grpcClient,
 		)
 
 		server := restapi.NewServer(api)
@@ -110,4 +114,12 @@ func main() { //nolint: funlen
 	}
 }
 
-func initGRPCClient()
+//
+func initGRPCClient(target string, opts ...grpc.DialOption) (grpcapi.GRPCServiceClient, error) {
+
+	conn, err := grpc.Dial(target, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return grpcapi.NewGRPCServiceClient(conn), nil
+}

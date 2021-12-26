@@ -29,6 +29,7 @@ func init() {
     "title": "BoilerPlate GW Swagger",
     "version": "0.0.1"
   },
+  "basePath": "/api/v1",
   "paths": {
     "/data/{id}": {
       "get": {
@@ -105,6 +106,7 @@ func init() {
     "title": "BoilerPlate GW Swagger",
     "version": "0.0.1"
   },
+  "basePath": "/api/v1",
   "paths": {
     "/data/{id}": {
       "get": {

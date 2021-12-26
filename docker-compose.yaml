@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+  gateway:
+    depends_on: 
+      - internal
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    environment:
+      HTTP_LISTEN_HOST: '0.0.0.0'
+      HTTP_LISTEN_PORT: '8080'
+      DEBUG_LISTEN: ':2112'
+      VERBOSE: 'true'
+      SERVICE_GRPC: 'internal:6060'
+    ports:
+    - '8080:8080'
+    - '2112:2112'
+
+  internal:
+    build:
+      context: ./grpc
+      dockerfile: Dockerfile
+    environment:
+      GRPC_LISTEN: ':6060'
+      DEBUG_LISTEN: ':2112'
+      VERBOSE: 'true'
+    ports:
+    - '2113:2112'
+    - '6060:6060'
